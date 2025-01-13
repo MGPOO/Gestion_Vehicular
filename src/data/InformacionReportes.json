@@ -1,0 +1,181 @@
+{
+    "data": [
+        {
+            "vhc_id": 1,
+            "vhc_placa": "ABC123",
+            "ranking": 1,
+            "fecha_inicio": "2021-01-01",
+            "fecha_fin": "2021-01-10",
+            "dias_laborables": [
+                {
+                    "fecha": "2021-01-01",
+                    "horas_actividad": 8,
+                    "km_recorridos": 120,
+                    "porcentaje_actividad": 80
+                },
+                {
+                    "fecha": "2021-01-02",
+                    "horas_actividad": 7,
+                    "km_recorridos": 110,
+                    "porcentaje_actividad": 70
+                }
+            ],
+            "dias_no_laborables": [
+                {
+                    "fecha": "2021-01-06",
+                    "horas_actividad": 0,
+                    "km_recorridos": 0,
+                    "porcentaje_actividad": 0
+                },
+                {
+                    "fecha": "2021-01-07",
+                    "horas_actividad": 1,
+                    "km_recorridos": 10,
+                    "porcentaje_actividad": 10
+                }
+            ]
+        },
+        {
+            "vhc_id": 2,
+            "vhc_placa": "DEF456",
+            "ranking": 2,
+            "fecha_inicio": "2021-01-01",
+            "fecha_fin": "2021-01-10",
+            "dias_laborables": [
+                {
+                    "fecha": "2021-01-01",
+                    "horas_actividad": 6,
+                    "km_recorridos": 90,
+                    "porcentaje_actividad": 60
+                },
+                {
+                    "fecha": "2021-01-02",
+                    "horas_actividad": 8,
+                    "km_recorridos": 130,
+                    "porcentaje_actividad": 80
+                },
+                {
+                    "fecha": "2021-01-03",
+                    "horas_actividad": 7,
+                    "km_recorridos": 110,
+                    "porcentaje_actividad": 70
+                },
+                {
+                    "fecha": "2021-01-04",
+                    "horas_actividad": 9,
+                    "km_recorridos": 140,
+                    "porcentaje_actividad": 90
+                },
+                {
+                    "fecha": "2021-01-05",
+                    "horas_actividad": 4,
+                    "km_recorridos": 60,
+                    "porcentaje_actividad": 40
+                }
+            ],
+            "dias_no_laborables": [
+                {
+                    "fecha": "2021-01-06",
+                    "horas_actividad": 0,
+                    "km_recorridos": 0,
+                    "porcentaje_actividad": 0
+                },
+                {
+                    "fecha": "2021-01-07",
+                    "horas_actividad": 1,
+                    "km_recorridos": 5,
+                    "porcentaje_actividad": 10
+                },
+                {
+                    "fecha": "2021-01-08",
+                    "horas_actividad": 0,
+                    "km_recorridos": 0,
+                    "porcentaje_actividad": 0
+                },
+                {
+                    "fecha": "2021-01-09",
+                    "horas_actividad": 2,
+                    "km_recorridos": 20,
+                    "porcentaje_actividad": 20
+                },
+                {
+                    "fecha": "2021-01-10",
+                    "horas_actividad": 0,
+                    "km_recorridos": 0,
+                    "porcentaje_actividad": 0
+                }
+            ]
+        },
+        {
+            "vhc_id": 3,
+            "vhc_placa": "GHI789",
+            "ranking": 3,
+            "fecha_inicio": "2021-01-01",
+            "fecha_fin": "2021-01-10",
+            "dias_laborables": [
+                {
+                    "fecha": "2021-01-01",
+                    "horas_actividad": 8,
+                    "km_recorridos": 125,
+                    "porcentaje_actividad": 80
+                },
+                {
+                    "fecha": "2021-01-02",
+                    "horas_actividad": 7,
+                    "km_recorridos": 115,
+                    "porcentaje_actividad": 70
+                },
+                {
+                    "fecha": "2021-01-03",
+                    "horas_actividad": 5,
+                    "km_recorridos": 85,
+                    "porcentaje_actividad": 50
+                },
+                {
+                    "fecha": "2021-01-04",
+                    "horas_actividad": 6,
+                    "km_recorridos": 95,
+                    "porcentaje_actividad": 60
+                },
+                {
+                    "fecha": "2021-01-05",
+                    "horas_actividad": 4,
+                    "km_recorridos": 60,
+                    "porcentaje_actividad": 40
+                }
+            ],
+            "dias_no_laborables": [
+                {
+                    "fecha": "2021-01-06",
+                    "horas_actividad": 0,
+                    "km_recorridos": 0,
+                    "porcentaje_actividad": 0
+                },
+                {
+                    "fecha": "2021-01-07",
+                    "horas_actividad": 1,
+                    "km_recorridos": 10,
+                    "porcentaje_actividad": 10
+                },
+                {
+                    "fecha": "2021-01-08",
+                    "horas_actividad": 0,
+                    "km_recorridos": 0,
+                    "porcentaje_actividad": 0
+                },
+                {
+                    "fecha": "2021-01-09",
+                    "horas_actividad": 3,
+                    "km_recorridos": 25,
+                    "porcentaje_actividad": 30
+                },
+                {
+                    "fecha": "2021-01-10",
+                    "horas_actividad": 0,
+                    "km_recorridos": 0,
+                    "porcentaje_actividad": 0
+                }
+            ]
+        }
+    ]
+}

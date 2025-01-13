@@ -1,0 +1,128 @@
+/* VehicleReport.css */
+.containerVMU {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.titleVMU {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.filterSectionVMU {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.dateRangeVMU {
+  flex: 1;
+}
+
+.dateLabel_VMU {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dateInputsVMU {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.dateInputVMU {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.dateInputVMU::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.vehicleSelectVMU {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.selectVMU {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.generateButtonVMU {
+  padding: 8px 16px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generateButtonVMU:hover {
+  background-color: #3367d6;
+}
+
+.tabsContainerVMU {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.tabButtonVMU {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tabButtonVMU.activeVMU {
+  color: #4285f4;
+  border-bottom: 2px solid #4285f4;
+}
+
+.tableWrapperVMU {
+  overflow-x: auto;
+}
+
+.dataTableVMU {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dataTableVMU th,
+.dataTableVMU td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.dataTableVMU th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #666;
+}
+
+.dataTableVMU tbody tr:hover {
+  background-color: #f5f5f5;
+}
