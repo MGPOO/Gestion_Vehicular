@@ -1,4 +1,4 @@
-/* VehicleReport.css */
+/* General Container */
 .containerVMU {
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -6,27 +6,35 @@
   margin: 0 auto;
 }
 
+/* Title */
 .titleVMU {
   font-size: 1.5rem;
   margin-bottom: 20px;
   color: #333;
 }
 
+/* Filter Section */
 .filterSectionVMU {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 30px;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
+  margin-bottom: 30px;
 }
 
+/* Date Range Styling */
 .dateRangeVMU {
   flex: 1;
+  min-width: 250px;
 }
 
 .dateLabel_VMU {
   font-size: 0.9rem;
   color: #666;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
 }
 
 .dateInputsVMU {
@@ -37,45 +45,82 @@
 
 .dateInputVMU {
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
   min-width: 150px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.dateInputVMU:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 5px rgba(66, 133, 244, 0.3);
+  outline: none;
+  background-color: #fff;
 }
 
 .dateInputVMU::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
+/* Vehicle Selection */
 .vehicleSelectVMU {
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
+  flex: 1;
+  min-width: 200px;
 }
 
-.selectVMU {
+.vehicleLabelVMU {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.vehicleSelectVMU select {
+  width: 100%;
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 0.9rem;
+  color: #444;
   background-color: white;
   cursor: pointer;
-  min-width: 150px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.vehicleSelectVMU select:hover {
+  border-color: #4285f4;
+}
+
+.vehicleSelectVMU select:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 5px rgba(66, 133, 244, 0.3);
+}
+
+/* Generate Button */
 .generateButtonVMU {
-  padding: 8px 16px;
+  padding: 10px 18px;
   background-color: #4285f4;
   color: white;
   border: none;
   border-radius: 4px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  align-self: flex-end;
 }
 
 .generateButtonVMU:hover {
   background-color: #3367d6;
+  transform: scale(1.05);
 }
 
+/* Tabs Section */
 .tabsContainerVMU {
   display: flex;
   gap: 10px;
@@ -85,13 +130,13 @@
 }
 
 .tabButtonVMU {
-  padding: 8px 16px;
+  padding: 10px 18px;
   background: none;
   border: none;
   cursor: pointer;
   color: #666;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .tabButtonVMU.activeVMU {
@@ -99,30 +144,71 @@
   border-bottom: 2px solid #4285f4;
 }
 
+/* Table Styling */
 .tableWrapperVMU {
   overflow-x: auto;
+  margin-top: 20px;
 }
 
 .dataTableVMU {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .dataTableVMU th,
 .dataTableVMU td {
-  padding: 12px;
+  padding: 14px 16px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
 .dataTableVMU th {
-  background-color: #f8f9fa;
+  background-color: #f7f9fc;
   font-weight: 600;
-  color: #666;
+  color: #444;
+  text-transform: uppercase;
+}
+
+.dataTableVMU tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
 }
 
 .dataTableVMU tbody tr:hover {
-  background-color: #f5f5f5;
+  background-color: #f1f1f1;
+}
+
+.dataTableVMU td {
+  color: #555;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.dataTableVMU th:nth-child(1),
+.dataTableVMU td:nth-child(1) {
+  text-align: center;
+}
+
+.dataTableVMU td:last-child {
+  color: #4285f4;
+  font-weight: bold;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .filterSectionVMU {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vehicleSelectVMU {
+    min-width: 100%;
+  }
+
+  .dateInputVMU {
+    min-width: 100%;
+  }
 }
