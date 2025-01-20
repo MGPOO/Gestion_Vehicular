@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import vehicleData from '../data/InformacionReportes.json';
+import newData from '../data/InfoNueva.json';
 import '../style/vehiculosMU.css';
 
 const VehicleReport = () => {
@@ -100,10 +101,9 @@ const VehicleReport = () => {
           <label className="vehicleLabelVMU">
             Seleccione el tipo de vehículo
             <select className="vehicleSelectVMU">
-              <option value="all">Todos</option>
-              <option value="car">Carro</option>
-              <option value="motorcycle">Moto</option>
-              <option value="truck">Camión</option>
+              <option value="all">Liviano</option>
+              <option value="car">Pesado</option>
+              <option value="motorcycle">Motocicleta</option>
             </select>
           </label>
         </div>

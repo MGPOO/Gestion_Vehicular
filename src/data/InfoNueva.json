@@ -1,0 +1,153 @@
+{
+    "message": "Procesamiento completado con éxito",
+    "tipo_reporte": "most_active_vehicle",
+    "results": [
+      {
+        "vhc_alias": "400\tAMA0577",
+        "vhc_imei": "864035053150729",
+        "db_name": "rds_864035053150729_db",
+        "total_activity_hours": "7.06",
+        "total_distance": 285,
+        "dias_laborables": [
+          {
+            "date": "2025-01-16",
+            "hours_activity": "3.16",
+            "total_distance": 128,
+            "activity_percentage": 13.149305555555554
+          },
+          {
+            "date": "2025-01-17",
+            "hours_activity": "2.50",
+            "total_distance": 79,
+            "activity_percentage": 10.429398148148149
+          }
+        ],
+        "dias_no_laborables": [
+          {
+            "date": "2025-01-18",
+            "hours_activity": "1.40",
+            "total_distance": 78,
+            "activity_percentage": 5.828703703703704
+          }
+        ]
+      },
+      {
+        "vhc_alias": "103\tAMA0556",
+        "vhc_imei": "864035053150182",
+        "db_name": "rds_864035053150182_db",
+        "total_activity_hours": "5.25",
+        "total_distance": 505,
+        "dias_laborables": [
+          {
+            "date": "2025-01-16",
+            "hours_activity": "3.21",
+            "total_distance": 406,
+            "activity_percentage": 13.35763888888889
+          },
+          {
+            "date": "2025-01-17",
+            "hours_activity": "2.04",
+            "total_distance": 99,
+            "activity_percentage": 8.519675925925926
+          }
+        ],
+        "dias_no_laborables": []
+      },
+      {
+        "vhc_alias": "401\tAMA0570",
+        "vhc_imei": "864035053074796",
+        "db_name": "rds_864035053074796_db",
+        "total_activity_hours": "4.70",
+        "total_distance": 380,
+        "dias_laborables": [
+          {
+            "date": "2025-01-16",
+            "hours_activity": "2.23",
+            "total_distance": 270,
+            "activity_percentage": 9.29050925925926
+          },
+          {
+            "date": "2025-01-17",
+            "hours_activity": "2.47",
+            "total_distance": 110,
+            "activity_percentage": 10.300925925925926
+          }
+        ],
+        "dias_no_laborables": []
+      },
+      {
+        "vhc_alias": "104\tAMA0576",
+        "vhc_imei": "864035053074655",
+        "db_name": "rds_864035053074655_db",
+        "total_activity_hours": "3.92",
+        "total_distance": 141,
+        "dias_laborables": [
+          {
+            "date": "2025-01-16",
+            "hours_activity": "1.86",
+            "total_distance": 80,
+            "activity_percentage": 7.769675925925926
+          },
+          {
+            "date": "2025-01-17",
+            "hours_activity": "2.05",
+            "total_distance": 61,
+            "activity_percentage": 8.556712962962964
+          }
+        ],
+        "dias_no_laborables": []
+      },
+      {
+        "vhc_alias": "107\tAMA1963",
+        "vhc_imei": "864035053147626",
+        "db_name": "rds_864035053147626_db",
+        "total_activity_hours": "2.04",
+        "total_distance": 87,
+        "dias_laborables": [
+          {
+            "date": "2025-01-16",
+            "hours_activity": "0.81",
+            "total_distance": 26,
+            "activity_percentage": 3.3958333333333335
+          },
+          {
+            "date": "2025-01-17",
+            "hours_activity": "1.23",
+            "total_distance": 61,
+            "activity_percentage": 5.106481481481481
+          }
+        ],
+        "dias_no_laborables": []
+      },
+      {
+        "vhc_alias": "100\tAMA0552",
+        "db_name": "rds_864035053025632_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053025632_db' para las fechas 2025-01-16 00:00:00 a 2025-01-18 23:59:59",
+        "data": []
+      },
+      {
+        "vhc_alias": "101\tAMA1964",
+        "db_name": "rds_864035053026010_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053026010_db' para las fechas 2025-01-16 00:00:00 a 2025-01-18 23:59:59",
+        "data": []
+      },
+      {
+        "vhc_alias": "102\tAMA0555",
+        "db_name": "rds_864035053074507_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053074507_db' para las fechas 2025-01-16 00:00:00 a 2025-01-18 23:59:59",
+        "data": []
+      },
+      {
+        "vhc_alias": "105\tAMA0591",
+        "db_name": "rds_864035053076841_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053076841_db' para las fechas 2025-01-16 00:00:00 a 2025-01-18 23:59:59",
+        "data": []
+      },
+      {
+        "vhc_alias": "201\tAMA0233",
+        "db_name": "rds_864035053074473_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053074473_db' para las fechas 2025-01-16 00:00:00 a 2025-01-18 23:59:59",
+        "data": []
+      }
+    ]
+  }
