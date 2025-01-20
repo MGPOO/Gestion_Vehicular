@@ -1,0 +1,281 @@
+{
+    "message": "Procesamiento completado con éxito",
+    "tipo_reporte": "ubicacion_flota",
+    "results": [
+      {
+        "vhc_alias": "100\tAMA0552",
+        "vhc_imei": "864035053025632",
+        "db_name": "rds_864035053025632_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053025632_db' para las fechas 2025-01-16 00:00:00 a 2025-01-17 23:59:59",
+        "ubicacion_flota": []
+      },
+      {
+        "vhc_alias": "101\tAMA1964",
+        "vhc_imei": "864035053026010",
+        "db_name": "rds_864035053026010_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053026010_db' para las fechas 2025-01-16 00:00:00 a 2025-01-17 23:59:59",
+        "ubicacion_flota": []
+      },
+      {
+        "vhc_alias": "102\tAMA0555",
+        "vhc_imei": "864035053074507",
+        "db_name": "rds_864035053074507_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053074507_db' para las fechas 2025-01-16 00:00:00 a 2025-01-17 23:59:59",
+        "ubicacion_flota": []
+      },
+      {
+        "vhc_alias": "103\tAMA0556",
+        "vhc_imei": "864035053150182",
+        "db_name": "rds_864035053150182_db",
+        "error": null,
+        "ubicacion_flota": [
+          {
+            "direccion": "ETAPA Gapal, Avenida 10 de Agosto, Solca, Santa Maria del Vergel, Huayna Cápac, Cuenca, Azuay, 010204, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T00:19:41",
+            "estacionamiento_fin": "2025-01-17T22:34:38",
+            "cantidad_registros": 71,
+            "duracion": 91181,
+            "duracion_horas": 25.328055555555554
+          },
+          {
+            "direccion": "Cuenca, Azuay, 010108, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T08:04:15",
+            "estacionamiento_fin": "2025-01-17T16:27:05",
+            "cantidad_registros": 97,
+            "duracion": 18164,
+            "duracion_horas": 5.045555555555556
+          },
+          {
+            "direccion": "Refugio Toreadora, Vía Cuenca - Molleturo - Puerto Inca, Sayausí, Cuenca, Azuay, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T10:48:22",
+            "estacionamiento_fin": "2025-01-16T12:58:04",
+            "cantidad_registros": 47,
+            "duracion": 7782,
+            "duracion_horas": 2.1616666666666666
+          },
+          {
+            "direccion": "La Posada Cuencana, 9-46, Tarqui, Gil Ramírez Dávalos, Cuenca, Azuay, 010101, Ecuador",
+            "estacionamiento_inicio": "2025-01-17T12:01:04",
+            "estacionamiento_fin": "2025-01-17T13:58:58",
+            "cantidad_registros": 64,
+            "duracion": 5419,
+            "duracion_horas": 1.5052777777777777
+          },
+          {
+            "direccion": "Paradero cajas, Rio Blanco, Molleturo, Sayausí, Cuenca, Azuay, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T13:16:01",
+            "estacionamiento_fin": "2025-01-16T14:51:45",
+            "cantidad_registros": 12,
+            "duracion": 2183,
+            "duracion_horas": 0.6063888888888889
+          }
+        ]
+      },
+      {
+        "vhc_alias": "104\tAMA0576",
+        "vhc_imei": "864035053074655",
+        "db_name": "rds_864035053074655_db",
+        "error": null,
+        "ubicacion_flota": [
+          {
+            "direccion": "Pelitos, Camino del Tejar, San Sebastián, Cuenca, Azuay, 010215, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T19:48:41",
+            "estacionamiento_fin": "2025-01-17T05:44:06",
+            "cantidad_registros": 28,
+            "duracion": 35725,
+            "duracion_horas": 9.92361111111111
+          },
+          {
+            "direccion": "Paseo Río Machángara, Cuenca, Azuay, 010108, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T00:12:26",
+            "estacionamiento_fin": "2025-01-17T23:20:39",
+            "cantidad_registros": 59,
+            "duracion": 33983,
+            "duracion_horas": 9.439722222222223
+          },
+          {
+            "direccion": "Cuenca, Azuay, 010108, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T06:05:45",
+            "estacionamiento_fin": "2025-01-17T07:13:57",
+            "cantidad_registros": 65,
+            "duracion": 17936,
+            "duracion_horas": 4.982222222222222
+          },
+          {
+            "direccion": "El Carmelo, Benigno Malo, Municipio, Gil Ramírez Dávalos, Cuenca, Azuay, 010101, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T11:07:28",
+            "estacionamiento_fin": "2025-01-17T17:01:12",
+            "cantidad_registros": 81,
+            "duracion": 14237,
+            "duracion_horas": 3.9547222222222222
+          },
+          {
+            "direccion": "Pileta ETAPA, Benigno Malo, Municipio, El Sagrario, Cuenca, Azuay, 010101, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T09:39:04",
+            "estacionamiento_fin": "2025-01-17T16:40:58",
+            "cantidad_registros": 41,
+            "duracion": 3389,
+            "duracion_horas": 0.9413888888888889
+          }
+        ]
+      },
+      {
+        "vhc_alias": "105\tAMA0591",
+        "vhc_imei": "864035053076841",
+        "db_name": "rds_864035053076841_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053076841_db' para las fechas 2025-01-16 00:00:00 a 2025-01-17 23:59:59",
+        "ubicacion_flota": []
+      },
+      {
+        "vhc_alias": "107\tAMA1963",
+        "vhc_imei": "864035053147626",
+        "db_name": "rds_864035053147626_db",
+        "error": null,
+        "ubicacion_flota": [
+          {
+            "direccion": "Etapa, Avenida 10 de Agosto, Solca, Santa Maria del Vergel, Huayna Cápac, Cuenca, Azuay, 010204, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T14:19:48",
+            "estacionamiento_fin": "2025-01-17T23:49:49",
+            "cantidad_registros": 92,
+            "duracion": 90215,
+            "duracion_horas": 25.059722222222224
+          },
+          {
+            "direccion": "ETAPA Gapal, Avenida 10 de Agosto, Solca, Santa Maria del Vergel, Huayna Cápac, Cuenca, Azuay, 010204, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T00:23:34",
+            "estacionamiento_fin": "2025-01-17T16:13:06",
+            "cantidad_registros": 90,
+            "duracion": 41856,
+            "duracion_horas": 11.626666666666667
+          },
+          {
+            "direccion": "Avenida 27 de Febrero, Huayna Cápac, Cuenca, Azuay, 010204, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T11:46:33",
+            "estacionamiento_fin": "2025-01-17T16:10:45",
+            "cantidad_registros": 66,
+            "duracion": 20401,
+            "duracion_horas": 5.666944444444445
+          },
+          {
+            "direccion": "Mercado 27 de Febrero, Adolfo Torres, Huayna Cápac, Cuenca, Azuay, 101050, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T11:53:26",
+            "estacionamiento_fin": "2025-01-16T13:46:18",
+            "cantidad_registros": 13,
+            "duracion": 3203,
+            "duracion_horas": 0.8897222222222222
+          },
+          {
+            "direccion": "Cancha del Barrio El Vergel, Del Arupo, El Vergel, Huayna Cápac, Cuenca, Azuay, 010204, Ecuador",
+            "estacionamiento_inicio": "2025-01-17T10:31:52",
+            "estacionamiento_fin": "2025-01-17T10:58:58",
+            "cantidad_registros": 10,
+            "duracion": 1626,
+            "duracion_horas": 0.45166666666666666
+          }
+        ]
+      },
+      {
+        "vhc_alias": "201\tAMA0233",
+        "vhc_imei": "864035053074473",
+        "db_name": "rds_864035053074473_db",
+        "error": "No se encontraron datos en la base de datos 'rds_864035053074473_db' para las fechas 2025-01-16 00:00:00 a 2025-01-17 23:59:59",
+        "ubicacion_flota": []
+      },
+      {
+        "vhc_alias": "400\tAMA0577",
+        "vhc_imei": "864035053150729",
+        "db_name": "rds_864035053150729_db",
+        "error": null,
+        "ubicacion_flota": [
+          {
+            "direccion": "La Posada Cuencana, 9-46, Tarqui, Gil Ramírez Dávalos, Cuenca, Azuay, 010101, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T07:48:16",
+            "estacionamiento_fin": "2025-01-17T18:12:09",
+            "cantidad_registros": 88,
+            "duracion": 56552,
+            "duracion_horas": 15.70888888888889
+          },
+          {
+            "direccion": "Academia de Música, Simón Bolívar, Cenaculo, Gil Ramírez Dávalos, Cuenca, Azuay, 010101, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T00:05:43",
+            "estacionamiento_fin": "2025-01-17T23:18:24",
+            "cantidad_registros": 54,
+            "duracion": 47544,
+            "duracion_horas": 13.206666666666667
+          },
+          {
+            "direccion": "Armenillas, Ciudadela Artesanal, El Vecino, Cuenca, Azuay, 010113, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T11:54:32",
+            "estacionamiento_fin": "2025-01-17T08:01:25",
+            "cantidad_registros": 59,
+            "duracion": 13659,
+            "duracion_horas": 3.7941666666666665
+          },
+          {
+            "direccion": "casa & casa, Octavio Díaz, La Republica, San Blas, Cuenca, Azuay, 010104, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T10:31:07",
+            "estacionamiento_fin": "2025-01-16T11:09:08",
+            "cantidad_registros": 22,
+            "duracion": 2281,
+            "duracion_horas": 0.6336111111111111
+          },
+          {
+            "direccion": "Del Pasillo, Ciudadela Artesanal, El Vecino, Cuenca, Azuay, 010105, Ecuador",
+            "estacionamiento_inicio": "2025-01-17T09:01:50",
+            "estacionamiento_fin": "2025-01-17T10:06:00",
+            "cantidad_registros": 9,
+            "duracion": 2148,
+            "duracion_horas": 0.5966666666666667
+          }
+        ]
+      },
+      {
+        "vhc_alias": "401\tAMA0570",
+        "vhc_imei": "864035053074796",
+        "db_name": "rds_864035053074796_db",
+        "error": null,
+        "ubicacion_flota": [
+          {
+            "direccion": "Etapa, Avenida 10 de Agosto, Solca, Santa Maria del Vergel, Huayna Cápac, Cuenca, Azuay, 010204, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T00:36:42",
+            "estacionamiento_fin": "2025-01-17T23:06:19",
+            "cantidad_registros": 103,
+            "duracion": 111592,
+            "duracion_horas": 30.997777777777777
+          },
+          {
+            "direccion": "Fasayñan, Totoracocha, Cuenca, Azuay, 010113, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T11:32:10",
+            "estacionamiento_fin": "2025-01-17T13:59:43",
+            "cantidad_registros": 75,
+            "duracion": 16249,
+            "duracion_horas": 4.5136111111111115
+          },
+          {
+            "direccion": "Las Cuatro Esquinas, Ricaurte, Cuenca, Azuay, 010108, Ecuador",
+            "estacionamiento_inicio": "2025-01-16T14:16:18",
+            "estacionamiento_fin": "2025-01-17T09:55:17",
+            "cantidad_registros": 15,
+            "duracion": 1889,
+            "duracion_horas": 0.5247222222222222
+          },
+          {
+            "direccion": "Cassot, Cacique Duma, Cañaribamba, Cuenca, Azuay, 010104, Ecuador",
+            "estacionamiento_inicio": "2025-01-17T15:46:54",
+            "estacionamiento_fin": "2025-01-17T16:17:06",
+            "cantidad_registros": 9,
+            "duracion": 1812,
+            "duracion_horas": 0.5033333333333333
+          },
+          {
+            "direccion": "Bellavista, Sayausi, Sayausí, Cuenca, Azuay, 010219, Ecuador",
+            "estacionamiento_inicio": "2025-01-17T14:51:15",
+            "estacionamiento_fin": "2025-01-17T15:13:28",
+            "cantidad_registros": 12,
+            "duracion": 1333,
+            "duracion_horas": 0.37027777777777776
+          }
+        ]
+      }
+    ]
+  }
