@@ -9,6 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={< Estacionamiento />} />
+        <Route path="/masUsado" element={< VehiculoMas />} />
       </Routes>
     </BrowserRouter>
   );

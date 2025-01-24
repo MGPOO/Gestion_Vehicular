@@ -19,7 +19,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
   margin-bottom: 30px;
 }
 
@@ -210,5 +210,67 @@
 
   .dateInputVMU {
     min-width: 100%;
+  }
+}
+
+.buttonContainerVMU {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.exportButtonVMU {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.exportButtonVMU:hover {
+  background-color: #45a049;
+}
+
+.exportButtonVMU:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.exportButtonVMU .icon {
+  font-size: 1rem;
+  color: white;
+}
+.exportPdfVMU {
+  background-color: #dc3545;
+}
+
+.exportPdfVMU:hover {
+  background-color: #c82333;
+}
+
+.exportPdfVMU:disabled {
+  background-color: #dc354580;
+}
+
+.buttonContainerVMU {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .buttonContainerVMU {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .buttonContainerVMU button {
+    width: 100%;
   }
 }
