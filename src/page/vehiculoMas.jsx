@@ -109,11 +109,19 @@ const VehicleReport = () => {
 
     if (filteredDays.length === 0) return null;
 
-    const totalSeconds = filteredDays.reduce(
-      (sum, day) =>
-        sum + Math.round(parseFloat(day.activity_hours || 0) * 3600),
-      0
-    );
+    // Filtra los días donde las horas de actividad son mayores o iguales a 0
+    const filteredDaysWithoutNegative = filteredDays.filter((day) => {
+      const activityHours = parseFloat(day.activity_hours);
+
+      // Filtra las horas de actividad negativas o no numéricas
+      return !isNaN(activityHours) && activityHours >= 0;
+    });
+
+    // Luego, suma solo los días con horas válidas
+    const totalSeconds = filteredDaysWithoutNegative.reduce((sum, day) => {
+      const activityHours = parseFloat(day.activity_hours);
+      return sum + Math.round(activityHours * 3600); // Convierte horas a segundos
+    }, 0);
 
     const totalKm = filteredDays.reduce(
       (sum, day) => sum + parseFloat(day.total_distance || 0),
@@ -453,29 +461,41 @@ const VehicleReport = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((vehicle, index) => {
-                const stats = calculateStats(vehicle);
-                if (!stats) {
+              {filteredData
+                .sort((a, b) => {
+                  const statsA = calculateStats(a);
+                  const statsB = calculateStats(b);
+
+                  // Si no hay estadísticas para uno de los vehículos, lo coloca al final
+                  if (!statsA) return 1;
+                  if (!statsB) return -1;
+
+                  // Ordenar de mayor a menor por total de segundos
+                  return statsB.totalSeconds - statsA.totalSeconds;
+                })
+                .map((vehicle, index) => {
+                  const stats = calculateStats(vehicle);
+                  if (!stats) {
+                    return (
+                      <tr key={vehicle.vhc_imei}>
+                        <td>{vehicle.vhc_alias.split("\t")[1]}</td>
+                        <td colSpan="4" className="noDataCellVMU">
+                          No hay datos disponibles para este vehículo en el
+                          rango seleccionado.
+                        </td>
+                      </tr>
+                    );
+                  }
                   return (
                     <tr key={vehicle.vhc_imei}>
                       <td>{vehicle.vhc_alias.split("\t")[1]}</td>
-                      <td colSpan="4" className="noDataCellVMU">
-                        No hay datos disponibles para este vehículo en el rango
-                        seleccionado.
-                      </td>
+                      <td>{index + 1}</td>
+                      <td>{formatTime(stats.totalSeconds)}</td>
+                      <td>{stats.totalKm.toFixed(2)}</td>
+                      <td>{stats.avgPercentage.toFixed(2)}%</td>
                     </tr>
                   );
-                }
-                return (
-                  <tr key={vehicle.vhc_imei}>
-                    <td>{vehicle.vhc_alias.split("\t")[1]}</td>
-                    <td>{index + 1}</td>
-                    <td>{formatTime(stats.totalSeconds)}</td>
-                    <td>{stats.totalKm.toFixed(2)}</td>
-                    <td>{stats.avgPercentage.toFixed(2)}%</td>
-                  </tr>
-                );
-              })}
+                })}
             </tbody>
           </table>
         )}
