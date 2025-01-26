@@ -42,7 +42,13 @@ const VehicleReport = () => {
     setError(null);
 
     const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
-    const fullUrl = `${corsProxyUrl}http://198.244.132.50:8008/reportes/39?vhc_tipo=${vehicleType}&start_date=${encodeURIComponent(
+    // const fullUrl = `${corsProxyUrl}http://198.244.132.50:8008/reportes/39?vhc_tipo=${vehicleType}&start_date=${encodeURIComponent(
+    //   formattedStartDate
+    // )}&end_date=${encodeURIComponent(
+    //   formattedEndDate
+    // )}&reporte=most_active_vehicle`;
+
+    const fullUrl = `http://198.244.132.50:8008/reportes/39?vhc_tipo=${vehicleType}&start_date=${encodeURIComponent(
       formattedStartDate
     )}&end_date=${encodeURIComponent(
       formattedEndDate
