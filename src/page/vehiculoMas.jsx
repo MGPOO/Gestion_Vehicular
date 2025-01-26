@@ -25,9 +25,9 @@ const VehicleReport = () => {
   const [error, setError] = useState(null); // Estado para manejar errores
   const [errors, setErrors] = React.useState({});
   const vehicleIcons = {
-    auto: faCar,
-    camion: faTruck,
-    moto: faMotorcycle,
+    Liviano: faCar,
+    Pesado: faTruck,
+    Motocicleta: faMotorcycle,
   };
 
   const fetchData = async () => {
@@ -343,46 +343,50 @@ const VehicleReport = () => {
       <h1 className="titleVMU">Reporte de Vehículos</h1>
       <div className="filterSectionVMU">
         <div className="dateRangeVMU">
-          <label className="dateLabel_VMU">
+          <label className="dateLabelVMU">
             Ingrese el rango de fecha
             <div className="dateInputsVMU">
-              <FontAwesomeIcon icon={faCalendar} className="icon" />
-              <input
-                type="date"
-                className="dateInputVMU"
-                value={startDate}
-                min="2025-01-15"
-                onChange={(e) => handleDateChange(e.target.value, "start")}
-                required
-              />
+              <div className="inputGroupVMU">
+                <FontAwesomeIcon icon={faCalendar} className="iconVMU" />
+                <input
+                  type="date"
+                  className="dateInputVMU"
+                  value={startDate}
+                  min="2025-01-15"
+                  onChange={(e) => handleDateChange(e.target.value, "start")}
+                  required
+                />
+              </div>
               {errors.startDate && (
-                <span className="error-message">{errors.startDate}</span>
+                <span className="errorMessageVMU">{errors.startDate}</span>
               )}
-              <FontAwesomeIcon icon={faCalendar} className="icon" />
-              <input
-                type="date"
-                className="dateInputVMU"
-                value={endDate}
-                min={startDate}
-                max={
-                  new Date(Date.now() - 86400000).toISOString().split("T")[0]
-                }
-                onChange={(e) => handleDateChange(e.target.value, "end")}
-                required
-              />
+              <div className="inputGroupVMU">
+                <FontAwesomeIcon icon={faCalendar} className="iconVMU" />
+                <input
+                  type="date"
+                  className="dateInputVMU"
+                  value={endDate}
+                  min={startDate}
+                  max={
+                    new Date(Date.now() - 86400000).toISOString().split("T")[0]
+                  }
+                  onChange={(e) => handleDateChange(e.target.value, "end")}
+                  required
+                />
+              </div>
               {errors.endDate && (
-                <span className="error-message">{errors.endDate}</span>
+                <span className="errorMessageVMU">{errors.endDate}</span>
               )}
             </div>
           </label>
         </div>
 
-        <div className="vehicle-select">
+        <div className="vehicleSelectVMU">
           <label>Tipo de vehículo</label>
-          <div className="vehicle-controls">
+          <div className="inputGroupVMU">
             <FontAwesomeIcon
               icon={vehicleIcons[vehicleType] || faCar}
-              className="icon"
+              className="iconVMU"
             />
             <select
               value={vehicleType}
@@ -396,14 +400,18 @@ const VehicleReport = () => {
               <option value="Pesado">Pesado</option>
               <option value="Motocicleta">Motocicleta</option>
             </select>
-            {errors.vehicleType && (
-              <span className="error-message">{errors.vehicleType}</span>
-            )}
           </div>
+          {errors.vehicleType && (
+            <span className="errorMessageVMU">{errors.vehicleType}</span>
+          )}
         </div>
 
         <div className="buttonContainerVMU">
-          <button onClick={handleGenerateReport} disabled={loading}>
+          <button
+            onClick={handleGenerateReport}
+            disabled={!startDate || !endDate || !vehicleType || loading}
+            className="generateButtonVMU"
+          >
             {loading ? "Cargando..." : "Generar Reporte"}
           </button>
           <button
@@ -411,7 +419,7 @@ const VehicleReport = () => {
             onClick={exportToExcel}
             disabled={filteredData.length === 0}
           >
-            <FontAwesomeIcon icon={faFileExport} className="icon" />
+            <FontAwesomeIcon icon={faFileExport} />
             Exportar Excel
           </button>
           <button
@@ -419,7 +427,7 @@ const VehicleReport = () => {
             onClick={exportToPDF}
             disabled={filteredData.length === 0}
           >
-            <FontAwesomeIcon icon={faFilePdf} className="icon" />
+            <FontAwesomeIcon icon={faFilePdf} />
             Exportar PDF
           </button>
         </div>
@@ -447,7 +455,7 @@ const VehicleReport = () => {
       <div className="tableWrapperVMU">
         {filteredData.length === 0 ? (
           <p className="noDataMessageVMU">
-            Ingrese un rango de fechas y haga clic en "Generar Reporte".
+            Ingrese un rango de fechas, seleccione el tipo de vehiculo y haga clic en "Generar Reporte".
           </p>
         ) : (
           <table className="dataTableVMU">
