@@ -1,23 +1,72 @@
-// ParkingReport.jsx
 import React, { useState, useEffect } from "react";
 import "../style/estacionamiento.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCar, faTruck, faMotorcycle, faCalendar, faFileAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCar, faTruck, faMotorcycle, faCalendar, faFileAlt, faFileExport, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const ParkingReport = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Mapeo de íconos para los tipos de vehículo
   const vehicleIcons = {
-    auto: faCar,
-    camion: faTruck,
-    moto: faMotorcycle,
+    Liviano: faCar,
+    Pesado: faTruck,
+    Motocicleta: faMotorcycle,
+  };
+
+  const fetchParkingData = async () => {
+    if (!startDate || !endDate || !vehicleType) {
+      setError("Todos los campos son obligatorios.");
+      return;
+    }
+
+    const apiUrl = `http://198.244.132.50:8008/reportes/39?vhc_tipo=${vehicleType}&start_date=${encodeURIComponent(
+      `${startDate} 00:00:00`
+    )}&end_date=${encodeURIComponent(`${endDate} 23:59:59`)}&reporte=ubicacion_flota`;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error en la respuesta: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data || !Array.isArray(data.results)) {
+        throw new Error("La API devolvió un formato inesperado.");
+      }
+
+      // Mapeo de datos
+      const mappedData = data.results.map((vehicle) => ({
+        alias: vehicle.vhc_alias,
+        ubicaciones: Object.entries(vehicle.ubicacion_flota || {}).flatMap(
+          ([date, locations]) =>
+            locations.map((ubicacion) => ({
+              fecha: date,
+              direccion: ubicacion.direccion,
+              duracion: formatTime(ubicacion.duracion),
+            }))
+        ),
+      }));
+
+      setFilteredData(mappedData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatTime = (seconds) => {
@@ -29,43 +78,60 @@ const ParkingReport = () => {
       .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  useEffect(() => {
-    // Carga del archivo JSON localS
-    const fetchParkingData = async () => {
-      try {
-        const response = await fetch("./ReporteEstacionamiento.json");
-        if (!response.ok) {
-          throw new Error("Error al cargar el archivo JSON");
-        }
-        const json = await response.json();
+  const exportToExcel = () => {
+    if (filteredData.length === 0) {
+      alert("No hay datos para exportar.");
+      return;
+    }
 
-        // Transformar los datos
-        const mappedData = json.results
-          .filter((vehicle) => vehicle.ubicacion_flota.length > 0) // Excluir vehículos sin ubicaciones
-          .map((vehicle) => ({
-            alias: vehicle.vhc_alias,
-            tipo: "auto", // Puedes mapear esto según tu lógica (auto, camion, moto, etc.)
-            ubicaciones: vehicle.ubicacion_flota.map((ubicacion) => ({
-              direccion: ubicacion.direccion,
-              tiempo: formatTime(ubicacion.duracion), // Formatear tiempo a hh:mm:ss
-            })),
-          }));
+    const headers = ["Alias", "Fecha", "Dirección", "Duración"];
+    const rows = filteredData.flatMap((vehicle) =>
+      vehicle.ubicaciones.map((ubicacion) => [
+        vehicle.alias,
+        ubicacion.fecha,
+        ubicacion.direccion,
+        ubicacion.duracion,
+      ])
+    );
 
-        setData(mappedData);
-        setFilteredData(mappedData);
-      } catch (err) {
-        console.error("Error al procesar el archivo JSON:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    XLSX.utils.book_append_sheet(wb, ws, "Reporte");
+    XLSX.writeFile(wb, `ReporteEstacionamiento_${startDate}_${endDate}.xlsx`);
+  };
 
-    fetchParkingData();
-  }, []);
+  const exportToPDF = () => {
+    if (filteredData.length === 0) {
+      alert("No hay datos para exportar.");
+      return;
+    }
+
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Reporte de Estacionamiento", 105, 20, { align: "center" });
+    doc.setFontSize(12);
+    doc.text(`Período: ${startDate} a ${endDate}`, 105, 30, { align: "center" });
+
+    const tableBody = filteredData.flatMap((vehicle) =>
+      vehicle.ubicaciones.map((ubicacion) => [
+        vehicle.alias,
+        ubicacion.fecha,
+        ubicacion.direccion,
+        ubicacion.duracion,
+      ])
+    );
+
+    doc.autoTable({
+      head: [["Alias", "Fecha", "Dirección", "Duración"]],
+      body: tableBody,
+      startY: 40,
+    });
+
+    doc.save(`ReporteEstacionamiento_${startDate}_${endDate}.pdf`);
+  };
 
   const handleGenerateReport = () => {
-    console.log("Generar reporte para:", startDate, endDate, vehicleType);
+    fetchParkingData();
   };
 
   if (loading) {
@@ -112,15 +178,21 @@ const ParkingReport = () => {
               onChange={(e) => setVehicleType(e.target.value)}
             >
               <option value="">Tipo de vehículo</option>
-              <option value="auto">Liviano</option>
-              <option value="camion">Pesado</option>
-              <option value="moto">Motocicleta</option>
+              <option value="Liviano">Liviano</option>
+              <option value="Pesado">Pesado</option>
+              <option value="Motocicleta">Motocicleta</option>
             </select>
           </div>
         </div>
 
         <button className="generate-report" onClick={handleGenerateReport}>
           <FontAwesomeIcon icon={faFileAlt} /> Generar Reporte
+        </button>
+        <button onClick={exportToExcel} className="exportButton">
+          <FontAwesomeIcon icon={faFileExport} /> Exportar Excel
+        </button>
+        <button onClick={exportToPDF} className="exportButton">
+          <FontAwesomeIcon icon={faFilePdf} /> Exportar PDF
         </button>
       </div>
 
@@ -129,7 +201,7 @@ const ParkingReport = () => {
           <div key={index} className="vehicle-section">
             <h3>
               <FontAwesomeIcon
-                icon={vehicleIcons[vehicle.tipo] || faQuestionCircle}
+                icon={vehicleIcons[vehicle.tipo] || faCar}
                 className="icon"
               />{" "}
               Alias: {vehicle.alias}
@@ -138,16 +210,18 @@ const ParkingReport = () => {
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Fecha</th>
                   <th>Dirección</th>
-                  <th>Tiempo</th>
+                  <th>Duración</th>
                 </tr>
               </thead>
               <tbody>
                 {vehicle.ubicaciones.map((ubicacion, idx) => (
                   <tr key={idx}>
                     <td>{idx + 1}</td>
+                    <td>{ubicacion.fecha}</td>
                     <td>{ubicacion.direccion}</td>
-                    <td>{ubicacion.tiempo}</td>
+                    <td>{ubicacion.duracion}</td>
                   </tr>
                 ))}
               </tbody>
