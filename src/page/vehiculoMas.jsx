@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import vehicleData from "../data/InfoNueva.json";
 import "../style/vehiculosMU.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -22,38 +21,61 @@ const VehicleReport = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [activeTab, setActiveTab] = useState("workdays");
   const [vehicleType, setVehicleType] = useState("");
+  const [loading, setLoading] = useState(false); // Estado para indicar la carga de datos
+  const [error, setError] = useState(null); // Estado para manejar errores
+  const [errors, setErrors] = React.useState({});
   const vehicleIcons = {
     auto: faCar,
     camion: faTruck,
     moto: faMotorcycle,
   };
-  const handleDateChange = (date, type) => {
-    if (type === "start") {
-      setStartDate(date);
-    } else {
-      setEndDate(date);
+
+  const fetchData = async () => {
+    if (!startDate || !endDate || !vehicleType) {
+      setError("Todos los campos son obligatorios.");
+      return;
+    }
+
+    const formattedStartDate = `${startDate} 00:00:00`;
+    const formattedEndDate = `${endDate} 23:59:59`;
+    setLoading(true);
+    setError(null);
+
+    const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const fullUrl = `${corsProxyUrl}http://198.244.132.50:8008/reportes/39?vhc_tipo=${vehicleType}&start_date=${encodeURIComponent(
+      formattedStartDate
+    )}&end_date=${encodeURIComponent(
+      formattedEndDate
+    )}&reporte=most_active_vehicle`;
+
+    try {
+      const response = await fetch(fullUrl, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error en la respuesta: ${response.status}`);
+      }
+      const responseText = await response.text();
+      const data = JSON.parse(responseText); // Parseando la respuesta JSON
+      console.log(data);
+
+      if (data.results && Array.isArray(data.results)) {
+        setFilteredData(data.results); // Guardando los datos en el estado
+      } else {
+        setError("No se encontraron resultados.");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filterData = () => {
-    if (!startDate || !endDate) return;
-
-    const filterStart = new Date(startDate);
-    const filterEnd = new Date(endDate);
-
-    const filtered = vehicleData.results.filter((vehicle) => {
-      const workdays = vehicle.dias_laborables || [];
-      const nonWorkdays = vehicle.dias_no_laborables || [];
-
-      const allDates = [
-        ...workdays.map((day) => new Date(day.date)),
-        ...nonWorkdays.map((day) => new Date(day.date)),
-      ];
-
-      return allDates.some((date) => date >= filterStart && date <= filterEnd);
-    });
-
-    setFilteredData(filtered);
+  const handleDateChange = (date, type) => {
+    if (type === "start") setStartDate(date);
+    else setEndDate(date);
   };
 
   const formatTime = (seconds) => {
@@ -83,7 +105,7 @@ const VehicleReport = () => {
 
     const totalSeconds = filteredDays.reduce(
       (sum, day) =>
-        sum + Math.round(parseFloat(day.hours_activity || 0) * 3600),
+        sum + Math.round(parseFloat(day.activity_hours || 0) * 3600),
       0
     );
 
@@ -93,10 +115,9 @@ const VehicleReport = () => {
     );
     const avgPercentage =
       filteredDays.reduce(
-        (sum, day) => sum + parseFloat(day.activity_percentage),
+        (sum, day) => sum + (parseFloat(day.activity_hours || 0) / 24) * 100, // Usamos 24 horas como el total del día
         0
       ) / filteredDays.length;
-
     return { totalSeconds, totalKm, avgPercentage };
   };
 
@@ -107,7 +128,7 @@ const VehicleReport = () => {
       );
       return;
     }
-  
+
     const reportTitle = [
       [
         `Reporte de Vehículos - ${
@@ -117,7 +138,7 @@ const VehicleReport = () => {
       [`Período: ${startDate} a ${endDate}`],
       [],
     ];
-  
+
     const headers = [
       "Ranking",
       "Placa",
@@ -125,12 +146,12 @@ const VehicleReport = () => {
       "Kilómetros Recorridos",
       "Porcentaje Promedio",
     ];
-  
+
     const rows = filteredData
       .map((vehicle, index) => {
         const stats = calculateStats(vehicle);
         if (!stats) return null;
-  
+
         return [
           index + 1, // Ranking
           vehicle.vhc_alias.split("\t")[1],
@@ -140,12 +161,12 @@ const VehicleReport = () => {
         ];
       })
       .filter((row) => row !== null);
-  
+
     const content = [...reportTitle, headers, ...rows];
-  
+
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(content);
-  
+
     const columnWidths = [
       { wch: 10 }, // Ranking
       { wch: 15 }, // Placa
@@ -154,18 +175,18 @@ const VehicleReport = () => {
       { wch: 20 }, // Porcentaje Promedio
     ];
     ws["!cols"] = columnWidths;
-  
+
     ws["!merges"] = [
       { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
       { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } },
     ];
-  
+
     XLSX.utils.book_append_sheet(wb, ws, "Reporte");
-  
+
     const fileName = `reporte_vehiculos_${startDate}_${endDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
   };
-  
+
   const exportToPDF = () => {
     if (filteredData.length === 0) {
       alert(
@@ -173,15 +194,15 @@ const VehicleReport = () => {
       );
       return;
     }
-  
+
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
       format: "a4",
     });
-  
+
     doc.setFont("helvetica");
-  
+
     doc.setFontSize(16);
     doc.text(
       `Reporte de Vehículos - ${
@@ -191,7 +212,7 @@ const VehicleReport = () => {
       20,
       { align: "center" }
     );
-  
+
     doc.setFontSize(12);
     doc.text(
       `Período: ${startDate} a ${endDate}`,
@@ -199,7 +220,7 @@ const VehicleReport = () => {
       30,
       { align: "center" }
     );
-  
+
     const currentDate = new Date().toLocaleString("es-ES");
     doc.setFontSize(10);
     doc.text(
@@ -208,12 +229,12 @@ const VehicleReport = () => {
       10,
       { align: "right" }
     );
-  
+
     const tableData = filteredData
       .map((vehicle, index) => {
         const stats = calculateStats(vehicle);
         if (!stats) return null;
-  
+
         return [
           index + 1, // Ranking
           vehicle.vhc_alias.split("\t")[1],
@@ -223,7 +244,7 @@ const VehicleReport = () => {
         ];
       })
       .filter((row) => row !== null);
-  
+
     const tableStyles = {
       headStyles: {
         fillColor: [66, 66, 66],
@@ -240,7 +261,7 @@ const VehicleReport = () => {
       },
       margin: { top: 40 },
     };
-  
+
     doc.autoTable({
       head: [
         [
@@ -264,7 +285,7 @@ const VehicleReport = () => {
         );
       },
     });
-  
+
     doc.setProperties({
       title: `Reporte de Vehículos - ${startDate} a ${endDate}`,
       subject: "Reporte de Actividad Vehicular",
@@ -272,17 +293,41 @@ const VehicleReport = () => {
       keywords: "vehiculos, reporte, actividad",
       creator: "Sistema de Gestión Vehicular",
     });
-  
+
     const fileName = `reporte_vehiculos_${startDate}_${endDate}.pdf`;
     doc.save(fileName);
   };
-  
+  const validateFields = () => {
+    const newErrors = {};
+
+    if (!startDate) {
+      newErrors.startDate = "Por favor, selecciona una fecha de inicio.";
+    }
+    if (!endDate) {
+      newErrors.endDate = "Por favor, selecciona una fecha de fin.";
+    } else if (startDate && new Date(startDate) > new Date(endDate)) {
+      newErrors.endDate =
+        "La fecha de inicio no puede ser mayor que la fecha de fin.";
+    }
+    if (!vehicleType) {
+      newErrors.vehicleType = "Por favor, selecciona un tipo de vehículo.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0; // Devuelve true si no hay errores
+  };
+
+  const handleGenerateReport = () => {
+    if (validateFields()) {
+      fetchData(); // Llama a la función si las validaciones pasan
+    }
+  };
 
   return (
     <div className="containerVMU">
       <h1 className="titleVMU">Reporte de Vehículos</h1>
       <div className="filterSectionVMU">
-
         <div className="dateRangeVMU">
           <label className="dateLabel_VMU">
             Ingrese el rango de fecha
@@ -292,16 +337,28 @@ const VehicleReport = () => {
                 type="date"
                 className="dateInputVMU"
                 value={startDate}
+                min="2025-01-15"
                 onChange={(e) => handleDateChange(e.target.value, "start")}
+                required
               />
+              {errors.startDate && (
+                <span className="error-message">{errors.startDate}</span>
+              )}
               <FontAwesomeIcon icon={faCalendar} className="icon" />
               <input
                 type="date"
                 className="dateInputVMU"
                 value={endDate}
                 min={startDate}
+                max={
+                  new Date(Date.now() - 86400000).toISOString().split("T")[0]
+                }
                 onChange={(e) => handleDateChange(e.target.value, "end")}
+                required
               />
+              {errors.endDate && (
+                <span className="error-message">{errors.endDate}</span>
+              )}
             </div>
           </label>
         </div>
@@ -316,18 +373,24 @@ const VehicleReport = () => {
             <select
               value={vehicleType}
               onChange={(e) => setVehicleType(e.target.value)}
+              required
             >
-              <option value="">Tipo de vehículo</option>
-              <option value="auto">Liviano</option>
-              <option value="camion">Pesado</option>
-              <option value="moto">Motocicleta</option>
+              <option value="" disabled>
+                Tipo de vehículo
+              </option>
+              <option value="Liviano">Liviano</option>
+              <option value="Pesado">Pesado</option>
+              <option value="Motocicleta">Motocicleta</option>
             </select>
+            {errors.vehicleType && (
+              <span className="error-message">{errors.vehicleType}</span>
+            )}
           </div>
         </div>
 
         <div className="buttonContainerVMU">
-          <button className="generateButtonVMU" onClick={filterData}>
-            Generar Reporte
+          <button onClick={handleGenerateReport} disabled={loading}>
+            {loading ? "Cargando..." : "Generar Reporte"}
           </button>
           <button
             className="exportButtonVMU"
