@@ -217,16 +217,31 @@ const ParkingReport = () => {
     fetchParkingData();
   };
 
-  if (loading) {
-    return <div>Cargando datos...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const StatusPopup = ({ message, isError }) => (
+    <div
+      style={{
+        position: "fixed",
+        top: "20%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        backgroundColor: isError ? "#f8d7da" : "#d1ecf1",
+        color: isError ? "#721c24" : "#0c5460",
+        padding: "20px",
+        border: `1px solid ${isError ? "#f5c6cb" : "#bee5eb"}`,
+        borderRadius: "5px",
+        zIndex: 1000,
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      {message}
+    </div>
+  );
 
   return (
     <div className="container">
+      {/* Mostrar mensaje emergente si está cargando o si hay error */}
+      {loading && <StatusPopup message="Cargando datos..." isError={false} />}
+      {error && <StatusPopup message={`Error: ${error}`} isError={true} />}
       <h1>Reporte de Estacionamiento Frecuente</h1>
 
       <div className="filters">
@@ -252,10 +267,7 @@ const ParkingReport = () => {
             min={startDate} // Fecha final no puede ser menor que la inicial
           />
         </div>
-          
         </div>
-        
-
         <div className="vehicle-select">
           <label>Seleccione el tipo de vehículo</label>
           <div className="vehicle-controls">

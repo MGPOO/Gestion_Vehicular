@@ -153,3 +153,17 @@ button:disabled {
   background-color: #ccc; /* Color gris */
   cursor: not-allowed; /* Indica que está deshabilitado */
 }
+
+.loading-message {
+  text-align: center;
+  font-size: 18px;
+  color: #007bff; /* Azul para el mensaje de carga */
+  margin-top: 20px;
+}
+
+.error-message {
+  text-align: center;
+  font-size: 18px;
+  color: #dc3545; /* Rojo para el mensaje de error */
+  margin-top: 20px;
+}
