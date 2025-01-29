@@ -1,6 +1,8 @@
 .container {
   padding: 20px;
   font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 h1 {
@@ -12,8 +14,9 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
 }
 
 .date-controls,
@@ -30,9 +33,15 @@ h1 {
 
 select,
 input[type="date"] {
-  padding: 8px;
+  padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  cursor: pointer;
+  min-width: 110px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
 }
 
 button.generate-report {
