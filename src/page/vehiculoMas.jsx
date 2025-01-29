@@ -7,7 +7,6 @@ import {
   faCar,
   faTruck,
   faMotorcycle,
-  faFileAlt,
   faFileExport,
   faFilePdf,
 } from "@fortawesome/free-solid-svg-icons";
@@ -399,7 +398,7 @@ const VehicleReport = () => {
               </option>
               <option value="Liviano">Liviano</option>
               <option value="Pesado">Pesado</option>
-              <option value="Motocicleta">Motocicleta</option>
+              {/*<option value="Motocicleta">Motocicleta</option>*/}
             </select>
           </div>
           {errors.vehicleType && (

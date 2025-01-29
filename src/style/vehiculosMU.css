@@ -171,6 +171,7 @@
   font-weight: 600;
   color: #444;
   text-transform: uppercase;
+  background-color: #d9e3f4;
 }
 
 .dataTableVMU tbody tr:nth-child(odd) {
