@@ -1,15 +1,15 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import MainNavigation from './page/main';
 import VehiculoMas from './page/vehiculoMas';
-import Estacionamiento from './page/estacionamiento'
-import Ralenti from './page/ralenti'
-
+import ParkingReport from './page/estacionamiento';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={< Estacionamiento />} />
-        <Route path="/masUsado" element={< VehiculoMas />} />
+        <Route path="/" element={<MainNavigation />} />
+        <Route path="/masUsado" element={<VehiculoMas />} />
+        <Route path="/estacionamiento" element={<ParkingReport/>} />
       </Routes>
     </BrowserRouter>
   );

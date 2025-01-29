@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../style/estacionamiento.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCar, faTruck, faMotorcycle, faCalendar, faFileAlt, faFileExport, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { faCar, faTruck, faMotorcycle, faCalendar, faFileAlt, faFileExport, faFilePdf, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -48,20 +48,32 @@ const ParkingReport = () => {
         throw new Error("La API devolvió un formato inesperado.");
       }
 
-      // Mapeo de datos
-      const mappedData = data.results.map((vehicle) => ({
-        alias: vehicle.vhc_alias,
-        ubicaciones: Object.entries(vehicle.ubicacion_flota || {}).flatMap(
-          ([date, locations]) =>
-            locations.map((ubicacion) => ({
-              fecha: date,
-              direccion: ubicacion.direccion,
-              duracion: formatTime(ubicacion.duracion),
-            }))
-        ),
-      }));
+      const vehiclesWithLocations = [];
+      const vehiclesWithoutLocations = [];
 
-      setFilteredData(mappedData);
+      data.results.forEach((vehicle) => {
+        if (vehicle.ubicacion_flota) {
+          vehiclesWithLocations.push({
+            alias: vehicle.vhc_alias,
+            ubicaciones: Object.entries(vehicle.ubicacion_flota || {})
+              .flatMap(([date, locations]) =>
+                locations.map((ubicacion) => ({
+                  fecha: date,
+                  direccion: ubicacion.direccion || "Sin registros de GPS",
+                  duracion: formatTime(ubicacion.duracion),
+                }))
+              )
+              .slice(0, 5),
+          });
+        } else {
+          vehiclesWithoutLocations.push({
+            alias: vehicle.vhc_alias,
+            ubicaciones: [],
+          });
+        }
+      });
+
+      setFilteredData([...vehiclesWithLocations, ...vehiclesWithoutLocations]);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -78,6 +90,11 @@ const ParkingReport = () => {
       .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const getGoogleMapsLink = (direccion) => {
+    const query = encodeURIComponent(direccion);
+    return `https://www.google.com/maps/search/?api=1&query=${query}`;
+  };
+
   const exportToExcel = () => {
     if (filteredData.length === 0) {
       alert("No hay datos para exportar.");
@@ -86,12 +103,14 @@ const ParkingReport = () => {
 
     const headers = ["Alias", "Fecha", "Dirección", "Duración"];
     const rows = filteredData.flatMap((vehicle) =>
-      vehicle.ubicaciones.map((ubicacion) => [
-        vehicle.alias,
-        ubicacion.fecha,
-        ubicacion.direccion,
-        ubicacion.duracion,
-      ])
+      vehicle.ubicaciones.length > 0
+        ? vehicle.ubicaciones.map((ubicacion) => [
+            vehicle.alias,
+            ubicacion.fecha,
+            ubicacion.direccion,
+            ubicacion.duracion,
+          ])
+        : [[vehicle.alias, "Sin registros", "Sin registros", ""]]
     );
 
     const wb = XLSX.utils.book_new();
@@ -113,18 +132,24 @@ const ParkingReport = () => {
     doc.text(`Período: ${startDate} a ${endDate}`, 105, 30, { align: "center" });
 
     const tableBody = filteredData.flatMap((vehicle) =>
-      vehicle.ubicaciones.map((ubicacion) => [
-        vehicle.alias,
-        ubicacion.fecha,
-        ubicacion.direccion,
-        ubicacion.duracion,
-      ])
+      vehicle.ubicaciones.length > 0
+        ? vehicle.ubicaciones.map((ubicacion) => [
+            vehicle.alias,
+            ubicacion.fecha,
+            ubicacion.direccion,
+            ubicacion.duracion,
+          ])
+        : [[vehicle.alias, "Sin registros", "Sin registros", ""]]
     );
 
     doc.autoTable({
       head: [["Alias", "Fecha", "Dirección", "Duración"]],
       body: tableBody,
       startY: 40,
+      styles: { overflow: "linebreak" },
+      columnStyles: {
+        2: { cellWidth: 100 },
+      },
     });
 
     doc.save(`ReporteEstacionamiento_${startDate}_${endDate}.pdf`);
@@ -164,7 +189,9 @@ const ParkingReport = () => {
               min={startDate}
             />
           </div>
+          
         </div>
+        
 
         <div className="vehicle-select">
           <label>Seleccione el tipo de vehículo</label>
@@ -211,7 +238,9 @@ const ParkingReport = () => {
                 <tr>
                   <th>#</th>
                   <th>Fecha</th>
-                  <th>Dirección</th>
+                  <th style={{ width: "1100px", wordWrap: "break-word" }}>
+                    Dirección
+                  </th>
                   <th>Duración</th>
                 </tr>
               </thead>
@@ -220,10 +249,27 @@ const ParkingReport = () => {
                   <tr key={idx}>
                     <td>{idx + 1}</td>
                     <td>{ubicacion.fecha}</td>
-                    <td>{ubicacion.direccion}</td>
+                    <td>
+                      {ubicacion.direccion}
+                      {ubicacion.direccion !== "Sin registros de GPS" && (
+                        <button
+                          onClick={() =>
+                            window.open(getGoogleMapsLink(ubicacion.direccion), "_blank")
+                          }
+                          style={{ marginLeft: "10px" }}
+                        >
+                          Ver Dirección
+                        </button>
+                      )}
+                    </td>
                     <td>{ubicacion.duracion}</td>
                   </tr>
                 ))}
+                {vehicle.ubicaciones.length === 0 && (
+                  <tr>
+                    <td colSpan="4">Sin registros</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

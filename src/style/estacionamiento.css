@@ -54,6 +54,7 @@
   
   .report-table {
     margin-top: 20px;
+    
   }
   
   .vehicle-section {
@@ -61,15 +62,18 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
+    
   }
   
   .vehicle-section h3 {
     margin: 0 0 10px;
+    
   }
   
   table {
     width: 100%;
     border-collapse: collapse;
+    
   }
   
   table th,
@@ -81,5 +85,6 @@
   
   table th {
     background-color: #f4f4f4;
+    background: linear-gradient(135deg, #ffffff, #91b9f4); 
   }
   

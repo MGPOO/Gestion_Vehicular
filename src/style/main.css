@@ -1,0 +1,54 @@
+.navigation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  padding-top: 60px;
+  background: linear-gradient(135deg, #ffffff, #91b9f4); /* Gradiente moderno */
+  color: #000000; /* Cambiar el color del texto para contrastar */
+  font-family: Arial, sans-serif;
+}
+
+.navigation-title {
+  font-size: 2.5rem; /* Título ligeramente más pequeño */
+  margin-bottom: 2.5rem; /* Espaciado moderado debajo del título */
+  display: flex;
+  align-items: center;
+  gap: 0.8rem; /* Espaciado entre el icono y el texto */
+}
+
+.navigation-icon {
+  color: #007bff;
+  font-size: 3rem; /* Icono del título más pequeño */
+}
+
+.navigation-buttons-container {
+  display: flex;
+  gap: 1.5rem; /* Menor separación entre botones */
+}
+
+.navigation-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem 2.5rem; /* Tamaño de los botones reducido */
+  text-decoration: none;
+  font-size: 1.3rem; /* Texto del botón más pequeño */
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px; /* Bordes redondeados moderados */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button-icon {
+  margin-right: 0.8rem; /* Espaciado entre el icono y el texto del botón */
+  font-size: 1.8rem; /* Icono del botón más pequeño */
+}
+
+.navigation-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.03); /* Efecto hover menos agresivo */
+}
