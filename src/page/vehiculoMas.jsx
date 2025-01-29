@@ -353,6 +353,7 @@ const VehicleReport = () => {
                   className="dateInputVMU"
                   value={startDate}
                   min="2025-01-15"
+                  max={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDateChange(e.target.value, "start")}
                   required
                 />
