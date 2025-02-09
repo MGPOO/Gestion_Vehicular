@@ -14,6 +14,9 @@ const ParkingReport = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+ 
+
 
   const vehicleIcons = {
     Liviano: faCar,
@@ -75,6 +78,7 @@ const ParkingReport = () => {
     )}&end_date=${encodeURIComponent(`${endDate} 23:59:59`)}&reporte=ubicacion_flota`;
 
     setLoading(true);
+    setIsGenerating(true);
     setError(null);
 
     try {
@@ -92,6 +96,50 @@ const ParkingReport = () => {
         throw new Error("La API devolvió un formato inesperado.");
       }
 
+      const haversineDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Radio de la Tierra en kilómetros
+        const toRad = (value) => (value * Math.PI) / 180;
+      
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(toRad(lat1)) *
+            Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+      
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distancia en kilómetros
+      };
+      
+      const groupLocations = (locations) => {
+        const grouped = [];
+      
+        locations.forEach((current) => {
+          const match = grouped.find(
+            (group) =>
+              haversineDistance(
+                group.latitud,
+                group.longitud,
+                current.latitud,
+                current.longitud
+              ) < 0.1 // Distancia menor a 100 metros
+          );
+      
+          if (match) {
+            // Si hay coincidencia, suma la duración
+            match.duracion += current.duracion;
+          } else {
+            // Si no hay coincidencia, agrega como nuevo grupo
+            grouped.push({ ...current });
+          }
+        });
+      
+        return grouped;
+      };
+      
+
       const vehiclesWithLocations = [];
       const vehiclesWithoutLocations = [];
 
@@ -99,15 +147,19 @@ const ParkingReport = () => {
         if (vehicle.ubicacion_flota) {
           vehiclesWithLocations.push({
             alias: vehicle.vhc_alias,
-            ubicaciones: Object.entries(vehicle.ubicacion_flota || {})
-              .flatMap(([date, locations]) =>
-                locations.map((ubicacion) => ({
-                  fecha: date,
-                  direccion: ubicacion.direccion || "Sin registros de GPS",
-                  duracion: formatTime(ubicacion.duracion),
-                }))
-              )
-              .slice(0, 5),
+            ubicaciones: groupLocations(
+              Object.entries(vehicle.ubicacion_flota || {})
+                .flatMap(([_, locations]) =>
+                  locations.map((ubicacion) => ({
+                    latitud: ubicacion.latitud_agrupada || null,
+                    longitud: ubicacion.longitud_agrupada || null,
+                    direccion: ubicacion.direccion || "Sin registros de GPS",
+                    duracion: ubicacion.duracion || 0,
+                  }))
+                )
+            )
+              .sort((a, b) => b.duracion - a.duracion) // Ordena por duración descendente
+              .slice(0, 5), // Limita a los primeros 5 registros
           });
         } else {
           vehiclesWithoutLocations.push({
@@ -122,6 +174,7 @@ const ParkingReport = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+      setIsGenerating(false);
     }
   };
   
@@ -135,70 +188,130 @@ const ParkingReport = () => {
       .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const getGoogleMapsLink = (direccion) => {
-    const query = encodeURIComponent(direccion);
-    return `https://www.google.com/maps/search/?api=1&query=${query}`;
-  };
+  const getGoogleMapsLink = (latitud, longitud) => {
+    return `https://www.google.com/maps?q=${latitud},${longitud}`;
+  };  
 
   const exportToExcel = () => {
     if (filteredData.length === 0) {
       alert("No hay datos para exportar.");
       return;
     }
-
-    const headers = ["Alias", "Fecha", "Dirección", "Duración"];
-    const rows = filteredData.flatMap((vehicle) =>
-      vehicle.ubicaciones.length > 0
-        ? vehicle.ubicaciones.map((ubicacion) => [
-            vehicle.alias,
-            ubicacion.fecha,
+  
+    // Crear encabezado personalizado con las fechas
+    const headers = [["Reporte de Estacionamiento"]];
+    headers.push([`Tipo de vehículo: ${vehicleType}`]); // Agregar el tipo de vehículo
+    headers.push([`Período: ${startDate} a ${endDate}`]);
+    headers.push([]); // Línea en blanco después del encabezado
+  
+    const rows = [];
+    filteredData.forEach((vehicle) => {
+      // Agregar encabezado para cada vehículo
+      rows.push([`Vehículo: ${vehicle.alias}`]);
+      rows.push(["#", "Dirección", "Duración"]); // Encabezados de columnas
+  
+      if (vehicle.ubicaciones.length > 0) {
+        vehicle.ubicaciones.forEach((ubicacion, idx) => {
+          rows.push([
+            idx + 1,
             ubicacion.direccion,
-            ubicacion.duracion,
-          ])
-        : [[vehicle.alias, "Sin registros", "Sin registros", ""]]
-    );
-
+            formatTime(ubicacion.duracion),
+          ]);
+        });
+      } else {
+        rows.push(["Sin registros", "", ""]);
+      }
+  
+      rows.push([]); // Línea en blanco entre vehículos
+    });
+  
+    // Combinar encabezados y datos
+    const data = [...headers, ...rows];
+  
+    // Crear libro y hoja
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const ws = XLSX.utils.aoa_to_sheet(data);
+  
+    // Ajustar estilo de ancho de columnas
+    ws["!cols"] = [
+      { wch: 10 }, // Columna #
+      { wch: 60 }, // Columna Dirección
+      { wch: 15 }, // Columna Duración
+    ];
+  
+    // Agregar la hoja al libro y guardar
     XLSX.utils.book_append_sheet(wb, ws, "Reporte");
     XLSX.writeFile(wb, `ReporteEstacionamiento_${startDate}_${endDate}.xlsx`);
   };
+  
 
   const exportToPDF = () => {
     if (filteredData.length === 0) {
       alert("No hay datos para exportar.");
       return;
     }
-
+  
     const doc = new jsPDF();
+    const tableBody = [];
+  
+    // Título principal del reporte
     doc.setFontSize(16);
     doc.text("Reporte de Estacionamiento", 105, 20, { align: "center" });
+  
+    // Subtítulo con las fechas
     doc.setFontSize(12);
-    doc.text(`Período: ${startDate} a ${endDate}`, 105, 30, { align: "center" });
+    doc.text(`Tipo de vehículo: ${vehicleType}`, 105, 30, { align: "center" });
 
-    const tableBody = filteredData.flatMap((vehicle) =>
-      vehicle.ubicaciones.length > 0
-        ? vehicle.ubicaciones.map((ubicacion) => [
-            vehicle.alias,
-            ubicacion.fecha,
-            ubicacion.direccion,
-            ubicacion.duracion,
-          ])
-        : [[vehicle.alias, "Sin registros", "Sin registros", ""]]
-    );
-
-    doc.autoTable({
-      head: [["Alias", "Fecha", "Dirección", "Duración"]],
-      body: tableBody,
-      startY: 40,
-      styles: { overflow: "linebreak" },
-      columnStyles: {
-        2: { cellWidth: 100 },
-      },
+    doc.text(`Período: ${startDate} a ${endDate}`, 105, 40, { align: "center" });
+  
+    let startY = 50; // Posición inicial para la tabla
+  
+    filteredData.forEach((vehicle, vehicleIndex) => {
+      // Espacio entre vehículos
+      if (vehicleIndex > 0) startY += 5;
+  
+      // Título para el vehículo
+      doc.setFontSize(14);
+      doc.text(`Vehículo: ${vehicle.alias}`, 10, startY);
+      startY += 5;
+  
+      // Encabezados de la tabla
+      tableBody.push([{ content: "#", styles: { halign: "center" } }, "Dirección", "Duración"]);
+  
+      if (vehicle.ubicaciones.length > 0) {
+        vehicle.ubicaciones.forEach((ubicacion, idx) => {
+          tableBody.push([
+            { content: idx + 1, styles: { halign: "center" } }, // Número
+            ubicacion.direccion, // Dirección
+            formatTime(ubicacion.duracion), // Duración
+          ]);
+        });
+      } else {
+        tableBody.push([{ content: "Sin registros", colSpan: 3, styles: { halign: "center" } }]);
+      }
+  
+      // Generar la tabla para el vehículo
+      doc.autoTable({
+        startY,
+        head: [["#", "Dirección", "Duración"]],
+        body: tableBody,
+        styles: { overflow: "linebreak", fontSize: 10 },
+        columnStyles: {
+          0: { cellWidth: 10 }, // Columna #
+          1: { cellWidth: 120 }, // Columna Dirección
+          2: { cellWidth: 30 }, // Columna Duración
+        },
+      });
+  
+      // Actualizar posición Y para el siguiente vehículo
+      startY = doc.previousAutoTable.finalY + 5;
+      tableBody.length = 0; // Limpiar el cuerpo de la tabla para el siguiente vehículo
     });
-
+  
+    // Guardar el PDF
     doc.save(`ReporteEstacionamiento_${startDate}_${endDate}.pdf`);
   };
+  
 
   const ITEMS_PER_PAGE = 5; // Número de filas por página
 
@@ -292,21 +405,21 @@ const ParkingReport = () => {
         <button
           className="generate-report"
           onClick={handleGenerateReport}
-          disabled={!isFormValid()} // Desactiva si la validación no es true
+          disabled={!isFormValid() || isGenerating} // Desactiva si la validación no es true
         >
           <FontAwesomeIcon icon={faFileAlt} /> Generar Reporte
         </button>
         <button
           onClick={exportToExcel}
           className="export-excel"
-          disabled={!isFormValid()} // Desactiva si la validación no es true
+          disabled={!isFormValid() || isGenerating} // Desactiva si la validación no es true
         >
           <FontAwesomeIcon icon={faFileExport} /> Exportar Excel
         </button>
         <button
           onClick={exportToPDF}
           className="export-pdf"
-          disabled={!isFormValid()} // Desactiva si la validación no es true
+          disabled={!isFormValid() || isGenerating} // Desactiva si la validación no es true
         >
           <FontAwesomeIcon icon={faFilePdf} /> Exportar PDF
         </button>
@@ -329,7 +442,6 @@ const ParkingReport = () => {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Fecha</th>
                 <th style={{ width: "1100px", wordWrap: "break-word" }}>
                   Dirección
                 </th>
@@ -341,24 +453,20 @@ const ParkingReport = () => {
                 vehicle.ubicaciones.map((ubicacion, idx) => (
                   <tr key={idx}>
                     <td>{idx + 1}</td>
-                    <td>{ubicacion.fecha}</td>
                     <td>
                       {ubicacion.direccion}
                       {ubicacion.direccion !== "Sin registros de GPS" && (
                         <button
-                          onClick={() =>
-                            window.open(
-                              getGoogleMapsLink(ubicacion.direccion),
-                              "_blank"
-                            )
-                          }
-                          style={{ marginLeft: "10px" }}
-                        >
-                          Ver Dirección
-                        </button>
+                        className="view-direction-btn"
+                        onClick={() => window.open(getGoogleMapsLink(ubicacion.latitud, ubicacion.longitud), "_blank")}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        Ver Dirección
+                      </button>
+                      
                       )}
                     </td>
-                    <td>{ubicacion.duracion}</td>
+                    <td>{formatTime(ubicacion.duracion)}</td>
                   </tr>
                 ))
               ) : (

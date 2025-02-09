@@ -176,3 +176,24 @@ button:disabled {
   color: #dc3545; /* Rojo para el mensaje de error */
   margin-top: 20px;
 }
+
+.view-direction-btn {
+  background-color: #007bff; /* Azul por defecto */
+  color: white;
+  border: none;
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 5px 10px; /* Espaciado interno */
+  font-size: 14px; /* Tamaño del texto */
+  cursor: pointer; /* Cursor tipo mano */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Animaciones */
+}
+
+.view-direction-btn:hover {
+  background-color: #0056b3; /* Azul más oscuro al pasar el cursor */
+  transform: scale(1.05); /* Efecto de escala al pasar el cursor */
+}
+
+.view-direction-btn:active {
+  background-color: #003f7f; /* Azul más oscuro al hacer clic */
+  transform: scale(0.95); /* Reducir ligeramente el tamaño al hacer clic */
+}
