@@ -8,6 +8,7 @@ import {
   faCar,
   faTruck,
   faMotorcycle,
+  faCarSide,
   faFileExport,
   faFilePdf,
 } from "@fortawesome/free-solid-svg-icons";
@@ -26,7 +27,7 @@ const VehicleReport = () => {
   const [errors, setErrors] = useState({});
   const [expandedRow, setExpandedRow] = useState(null);
   const vehicleIcons = {
-    Liviano: faCar,
+    Liviano: faCarSide,
     Pesado: faTruck,
     Motocicleta: faMotorcycle,
   };
@@ -77,8 +78,14 @@ const VehicleReport = () => {
   };
 
   const handleDateChange = (date, type) => {
-    if (type === "start") setStartDate(date);
-    else setEndDate(date);
+    if (type === "start") {
+      setStartDate(date);
+      setErrors(prev => ({...prev, startDate: ''}));
+    } else {
+      setEndDate(date);
+      setErrors(prev => ({...prev, endDate: ''}));
+    }
+    setActivityData([]);
   };
 
   const formatTime = (seconds) => {
@@ -431,7 +438,7 @@ const VehicleReport = () => {
             {loading ? "Cargando..." : "Generar Reporte"}
           </button>
           <button
-            className="exportButtonVMU"
+            className="exportButtonVMU exportExcelVMU"
             onClick={exportToExcel}
             disabled={activityData.length === 0}
           >
