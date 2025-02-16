@@ -355,7 +355,7 @@ const VehicleReport = () => {
 
   return (
     <div className="containerVMU">
-      <h1 className="titleVMU">Reporte de Vehículos</h1>
+      <h1 className="titleVMU">Reporte de Vehículos Más Usados</h1>
       <div className="filterSectionVMU">
         <div className="dateRangeVMU">
           <label className="dateLabelVMU">
