@@ -133,12 +133,8 @@ const VehicleReport = () => {
       (sum, day) => sum + parseFloat(day.total_distance || 0),
       0
     );
-    const avgPercentage =
-      filteredDays.reduce(
-        (sum, day) => sum + (parseFloat(day.activity_hours || 0) / 24) * 100, // Usamos 24 horas como el total del día
-        0
-      ) / filteredDays.length;
-    return { totalSeconds, totalKm, avgPercentage };
+    
+    return { totalSeconds, totalKm};
   };
 
   const exportToExcel = () => {
@@ -147,69 +143,108 @@ const VehicleReport = () => {
       return;
     }
   
+    // Estilo "bold" para usar en celdas
+    const boldStyle = { font: { bold: true } };
+  
+    // Título y subtítulo del reporte (en negrita)
     const reportTitle = [
-      [`Reporte de Vehículos - ${activeTab === "workdays" ? "Días Laborales" : "Días No Laborales"}`],
-      [`Período: ${startDate} a ${endDate}`],
+      [
+        {
+          v: `Reporte de Vehículos - ${
+            activeTab === "workdays" ? "Días Laborales" : "Días No Laborales"
+          }`,
+          s: boldStyle,
+        },
+      ],
+      [
+        {
+          v: `Período: ${startDate} a ${endDate}`,
+          s: boldStyle,
+        },
+      ],
       [],
     ];
   
-    const headers = [
-      "Ranking",
-      "Placa",
-      "Horas de Actividad",
-      "Kilómetros Recorridos",
-      "Porcentaje Promedio",
-    ];
+    let rows = [];
   
-    const rows = activityData
-      .map((vehicle, index) => {
-        const stats = calculateStats(vehicle);
-        if (!stats) return null;
+    activityData.forEach((vehicle, index) => {
+      const stats = calculateStats(vehicle);
+      if (!stats) return;
   
-        const vehicleRow = [
-          index + 1, // Ranking
-          vehicle.vhc_alias.split("\t")[1],
-          formatTime(stats.totalSeconds),
-          stats.totalKm.toFixed(2),
-          `${stats.avgPercentage.toFixed(2)}%`,
-        ];
+      const ranking = index + 1;
+      const placa = vehicle.vhc_alias.split("\t")[1];
+      const horasTotales = formatTime(stats.totalSeconds);
+      const kmTotales = stats.totalKm.toFixed(2);
   
-        // Detalle diario
-        const days = activeTab === "workdays" ? vehicle.dias_laborables : vehicle.dias_no_laborables;
-        const dailyDetails = days.map(day => [
-          "", // Espacio en blanco para alinear con las columnas principales
-          day.date,
-          formatHours(day.activity_hours),
-          day.total_distance,
-          "", // Espacio en blanco para alinear con las columnas principales
+      // Fila resumen del vehículo
+      rows.push([
+        { v: `Ranking: ${ranking}`, s: boldStyle },
+        { v: `Placa: ${placa}`, s: boldStyle },
+        { v: `Horas: ${horasTotales}`, s: boldStyle },
+        { v: `Km: ${kmTotales}`, s: boldStyle },
+      ]);
+  
+      // Fila que indica "Detalle Diario" (título)
+      rows.push([
+        {
+          v: "Detalle Diario",
+          s: { ...boldStyle, alignment: { horizontal: "left" } },
+        },
+        { v: "", s: {} },
+        { v: "", s: {} },
+        { v: "", s: {} },
+      ]);
+  
+      // Encabezado del detalle diario en negrita
+      rows.push([
+        { v: "Fecha", s: boldStyle },
+        { v: "Horas de Actividad", s: boldStyle },
+        { v: "Km Recorridos", s: boldStyle },
+        { v: "", s: boldStyle },
+      ]);
+  
+      // Filas de detalle diario (sin negrita, para distinguir)
+      const days =
+        activeTab === "workdays"
+          ? vehicle.dias_laborables
+          : vehicle.dias_no_laborables;
+  
+      days.forEach((day) => {
+        rows.push([
+          { v: day.date },
+          { v: formatHours(day.activity_hours) },
+          { v: day.total_distance },
+          { v: "" },
         ]);
+      });
   
-        return [vehicleRow, ...dailyDetails];
-      })
-      .filter((row) => row !== null)
-      .flat();
+      // Fila en blanco para separar vehículos
+      rows.push(["", "", "", ""]);
+    });
   
-    const content = [...reportTitle, headers, ...rows];
+    // Combinar títulos y filas
+    const content = [...reportTitle, ...rows];
   
+    // Creación del libro de Excel
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(content);
   
-    const columnWidths = [
-      { wch: 10 }, // Ranking
-      { wch: 15 }, // Placa
-      { wch: 20 }, // Horas de Actividad
-      { wch: 20 }, // Kilómetros Recorridos
-      { wch: 20 }, // Porcentaje Promedio
+    // Ajuste de anchos de columna
+    ws["!cols"] = [
+      { wch: 25 },
+      { wch: 25 },
+      { wch: 25 },
+      { wch: 25 },
     ];
-    ws["!cols"] = columnWidths;
   
+    // Merges para los títulos (primera y segunda fila)
     ws["!merges"] = [
-      { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
-      { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } },
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
+      { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
     ];
   
+    // Agregar la hoja al libro y guardar
     XLSX.utils.book_append_sheet(wb, ws, "Reporte");
-  
     const fileName = `reporte_vehiculos_${startDate}_${endDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
   };
@@ -228,14 +263,18 @@ const VehicleReport = () => {
   
     doc.setFont("helvetica");
   
+    // Título principal
     doc.setFontSize(16);
     doc.text(
-      `Reporte de Vehículos - ${activeTab === "workdays" ? "Días Laborales" : "Días No Laborales"}`,
+      `Reporte de Vehículos - ${
+        activeTab === "workdays" ? "Días Laborales" : "Días No Laborales"
+      }`,
       doc.internal.pageSize.getWidth() / 2,
       20,
       { align: "center" }
     );
   
+    // Subtítulo con fechas
     doc.setFontSize(12);
     doc.text(
       `Período: ${startDate} a ${endDate}`,
@@ -244,6 +283,7 @@ const VehicleReport = () => {
       { align: "center" }
     );
   
+    // Fecha de generación
     const currentDate = new Date().toLocaleString("es-ES");
     doc.setFontSize(10);
     doc.text(
@@ -253,55 +293,81 @@ const VehicleReport = () => {
       { align: "right" }
     );
   
-    const tableData = activityData
-      .map((vehicle, index) => {
-        const stats = calculateStats(vehicle);
-        if (!stats) return null;
+    // Armamos el cuerpo de la tabla
+    let bodyData = [];
   
-        const vehicleRow = [
-          index + 1, // Ranking
-          vehicle.vhc_alias.split("\t")[1],
-          formatTime(stats.totalSeconds),
-          stats.totalKm.toFixed(2),
-          `${stats.avgPercentage.toFixed(2)}%`,
-        ];
+    activityData.forEach((vehicle, index) => {
+      const stats = calculateStats(vehicle);
+      if (!stats) return;
   
-        // Detalle diario
-        const days = activeTab === "workdays" ? vehicle.dias_laborables : vehicle.dias_no_laborables;
-        const dailyDetails = days.map(day => [
-          "", // Espacio en blanco para alinear con las columnas principales
+      const ranking = index + 1;
+      const placa = vehicle.vhc_alias.split("\t")[1];
+      const horasTotales = formatTime(stats.totalSeconds);
+      const kmTotales = stats.totalKm.toFixed(2);
+  
+      // Fila resumen: Ranking, Placa, Horas, Km (en negrita)
+      bodyData.push([
+        {
+          content: `Ranking: ${ranking}`,
+          styles: { fontStyle: "bold" },
+        },
+        {
+          content: `Placa: ${placa}`,
+          styles: { fontStyle: "bold" },
+        },
+        {
+          content: `Horas: ${horasTotales}`,
+          styles: { fontStyle: "bold" },
+        },
+        {
+          content: `Km: ${kmTotales}`,
+          styles: { fontStyle: "bold" },
+        },
+      ]);
+  
+      // Fila “Detalle Diario”
+      bodyData.push([
+        {
+          content: "Detalle Diario",
+          colSpan: 4,
+          styles: { fontStyle: "bold", halign: "left", fillColor: [240, 240, 240] },
+        },
+      ]);
+  
+      // Encabezado del detalle diario en negrita
+      bodyData.push([
+        { content: "Fecha", styles: { fontStyle: "bold" } },
+        { content: "Horas de Actividad", styles: { fontStyle: "bold" } },
+        { content: "Km Recorridos", styles: { fontStyle: "bold" } },
+        { content: "", styles: { fontStyle: "bold" } },
+      ]);
+  
+      // Filas de detalle diario (normal)
+      const days =
+        activeTab === "workdays"
+          ? vehicle.dias_laborables
+          : vehicle.dias_no_laborables;
+  
+      days.forEach((day) => {
+        bodyData.push([
           day.date,
           formatHours(day.activity_hours),
           day.total_distance,
-          "", // Espacio en blanco para alinear con las columnas principales
+          "",
         ]);
+      });
   
-        return [vehicleRow, ...dailyDetails];
-      })
-      .filter((row) => row !== null)
-      .flat();
+      // Fila en blanco para separar
+      bodyData.push(["", "", "", ""]);
+    });
   
-    const tableStyles = {
-      headStyles: {
-        fillColor: [66, 66, 66],
-        textColor: 255,
-        fontSize: 12,
-        halign: "center",
-      },
-      bodyStyles: {
-        fontSize: 11,
-        halign: "center",
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245],
-      },
-      margin: { top: 40 },
-    };
-  
+    // Configuración de estilos en autoTable
     doc.autoTable({
-      head: [["Ranking", "Placa", "Horas de Actividad", "Kilómetros Recorridos", "Porcentaje Promedio"]],
-      body: tableData,
-      ...tableStyles,
+      body: bodyData,
+      startY: 40,
+      bodyStyles: { fontSize: 11, halign: "center" },
+      alternateRowStyles: { fillColor: [245, 245, 245] },
+      margin: { top: 40 },
       didDrawPage: function (data) {
         const pageNumber = doc.internal.getNumberOfPages();
         doc.setFontSize(8);
@@ -314,6 +380,7 @@ const VehicleReport = () => {
       },
     });
   
+    // Metadatos del PDF
     doc.setProperties({
       title: `Reporte de Vehículos - ${startDate} a ${endDate}`,
       subject: "Reporte de Actividad Vehicular",
@@ -322,9 +389,11 @@ const VehicleReport = () => {
       creator: "Sistema de Gestión Vehicular",
     });
   
+    // Guardamos el archivo
     const fileName = `reporte_vehiculos_${startDate}_${endDate}.pdf`;
     doc.save(fileName);
   };
+  
 
   const validateFields = () => {
     const newErrors = {};
@@ -482,7 +551,6 @@ const VehicleReport = () => {
                 <th>Ranking</th>
                 <th>Horas de Actividad</th>
                 <th>Kilómetros Recorridos</th>
-                <th>Porcentaje Promedio</th>
               </tr>
             </thead>
             <tbody>
@@ -522,7 +590,6 @@ const VehicleReport = () => {
                       <td>{index + 1}</td>
                       <td>{formatTime(stats.totalSeconds)}</td>
                       <td>{stats.totalKm.toFixed(2)}</td>
-                      <td>{stats.avgPercentage.toFixed(2)}%</td>
                     </tr>
 
                     {expandedRow === vehicle.vhc_imei && (
